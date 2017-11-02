@@ -1,8 +1,10 @@
 import re
 import tweepy
 from tweepy import OAuthHandler
-from textblob import TextBlob
 
+import sys
+sys.path.insert(0,'.')
+import keys
 
 
 # Taken from http://www.geeksforgeeks.org/twitter-sentiment-analysis-using-python/
@@ -11,15 +13,19 @@ class TwitterClient(object):
     '''
     Generic Twitter Class for sentiment analysis.
     '''
+    
+    POSITIVE_STRING_SET = set(['☺️', ':)'])
+    NEGATIVE_STRING_SET = set(['☹️', ':('])
+
     def __init__(self):
         '''
         Class constructor or initialization method.
         '''
         # keys and tokens from the Twitter Dev Console
-        consumer_key = 'XXXXXXXXXXXXXXXXXXXXXXXX'
-        consumer_secret = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-        access_token = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-        access_token_secret = 'XXXXXXXXXXXXXXXXXXXXXXXXX'
+        consumer_key = keys.CONSUMER_KEY 
+        consumer_secret = keys.CONSUMER_SECRET 
+        access_token = keys.ACCESS_TOKEN 
+        access_token_secret = keys.ACCESS_TOKEN_SECRET 
  
         # attempt authentication
         try:
@@ -42,28 +48,36 @@ class TwitterClient(object):
     def get_tweet_sentiment(self, tweet):
         '''
         Utility function to classify sentiment of passed tweet
-        using textblob's sentiment method
         '''
-        # create TextBlob object of passed tweet text
-        analysis = TextBlob(self.clean_tweet(tweet))
-        # set sentiment
-        if analysis.sentiment.polarity > 0:
-            return 'positive'
-        elif analysis.sentiment.polarity == 0:
-            return 'neutral'
-        else:
-            return 'negative'
+
+        sentiment = 0.5
+
+        for substring in self.POSITIVE_STRING_SET:
+            if substring in tweet.text:
+                sentiment += 0.5
+                break
+        for substring in self.NEGATIVE_STRING_SET:
+            if substring in tweet.text:
+                sentiment -= 0.5
+                break
+        return sentiment
+
  
-    def get_tweets(self, query, count = 10):
+    def get_tweets(self, queries = None, count = 1000):
         '''
         Main function to fetch tweets and parse them.
         '''
         # empty list to store parsed tweets
         tweets = []
  
+        if queries is None:
+            queries = self.POSITIVE_STRING_SET | self.NEGATIVE_STRING_SET
+
         try:
             # call twitter api to fetch tweets
-            fetched_tweets = self.api.search(q = query, count = count)
+            fetched_tweets = []
+            for q in queries:
+                fetched_tweets += self.api.search(q = q, count = count)
  
             # parsing tweets one by one
             for tweet in fetched_tweets:
@@ -71,9 +85,13 @@ class TwitterClient(object):
                 parsed_tweet = {}
  
                 # saving text of tweet
-                parsed_tweet['text'] = tweet.text
+                parsed_tweet['text'] = self.clean_tweet(tweet.text)
+                if parsed_tweet['text'] == '':
+                    continue
                 # saving sentiment of tweet
-                parsed_tweet['sentiment'] = self.get_tweet_sentiment(tweet.text)
+                parsed_tweet['sentiment'] = self.get_tweet_sentiment(tweet)
+                if parsed_tweet['sentiment'] == 0.5:
+                    continue
  
                 # appending parsed tweet to tweets list
                 if tweet.retweet_count > 0:
@@ -94,19 +112,17 @@ def main():
     # creating object of TwitterClient Class
     api = TwitterClient()
     # calling function to get tweets
-    tweets = api.get_tweets(query = 'Donald Trump', count = 200)
+    tweets = api.get_tweets(count = 10000)
+    print(tweets)
  
     # picking positive tweets from tweets
-    ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive']
+    ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 1]
     # percentage of positive tweets
     print("Positive tweets percentage: {} %".format(100*len(ptweets)/len(tweets)))
     # picking negative tweets from tweets
-    ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 'negative']
+    ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 0]
     # percentage of negative tweets
     print("Negative tweets percentage: {} %".format(100*len(ntweets)/len(tweets)))
-    # percentage of neutral tweets
-    print("Neutral tweets percentage: {} % \
-        ".format(100*len(tweets - ntweets - ptweets)/len(tweets)))
  
     # printing first 5 positive tweets
     print("\n\nPositive tweets:")
