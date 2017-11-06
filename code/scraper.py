@@ -78,7 +78,7 @@ class TwitterClient(object):
             # call twitter api to fetch tweets
             fetched_tweets = []
             for q in queries:
-                fetched_tweets += self.api.search(q = q, count = count)
+                fetched_tweets += self.api.search(q = q, count = count, lang='en')
  
             # parsing tweets one by one
             for tweet in fetched_tweets:
@@ -143,4 +143,34 @@ def main():
  
 if __name__ == "__main__":
     # calling main function
-    main()
+    #main()
+    # creating object of TwitterClient Class
+    api = TwitterClient()
+    # calling function to get tweets
+    tweets = api.get_tweets(count = 10000)
+    print(tweets)
+
+    filename = 'sample_tweets.json'
+    f = open(filename, 'w')
+    for t in tweets:
+        f.write(json.dumps(t)+'\n')
+    f.close()
+ 
+    # picking positive tweets from tweets
+    ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 1]
+    # percentage of positive tweets
+    print("Positive tweets percentage: {} %".format(100*len(ptweets)/len(tweets)))
+    # picking negative tweets from tweets
+    ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 0]
+    # percentage of negative tweets
+    print("Negative tweets percentage: {} %".format(100*len(ntweets)/len(tweets)))
+ 
+    # printing first 5 positive tweets
+    print("\n\nPositive tweets:")
+    for tweet in ptweets[:10]:
+        print(tweet['text'])
+ 
+    # printing first 5 negative tweets
+    print("\n\nNegative tweets:")
+    for tweet in ntweets[:10]:
+        print(tweet['text'])
