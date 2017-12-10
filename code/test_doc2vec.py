@@ -9,7 +9,7 @@ logging.basicConfig(filename='run_{}'.format(strftime("%Y-%m-%d_%H:%M:%S", gmtim
 from test_tweets import *
 
 #text = open('tweets.csv')
-text = open('tweets4_with_contractions.csv')
+text = open('tweets4_also_sanitized.csv')
 
 corpus = []
 for i, line in enumerate(csv.reader(text)):
@@ -30,6 +30,8 @@ model.train(corpus, total_examples=model.corpus_count, epochs=model.iter)
 
 happy_new_year = model.infer_vector(['happy', 'new', 'year'])
 
+vs = [model.infer_vector(x) for x in test_tweets]
+
 def test_dist(v1, v2):
     return np.linalg.norm(v1 - v2)
 
@@ -40,4 +42,7 @@ def test_all(l):
             ret.append(
                     (test_dist(l[i], l[j]), i, j))
     return ret
+
+# to verify vocab:
+model.wv.most_similar(positive=['god'])
 
