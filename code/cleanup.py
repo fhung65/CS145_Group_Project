@@ -25,6 +25,7 @@ def sanitize(dataStr, clusterHashTable):
 	outputWords = []
 	words = dataStr.split()
 	for word in words:
+		word = word.lower()
 		if word in clusterHashTable:
 			word = clusterHashTable[word]
 		if word not in stopWords and not RE_D.search(word):
@@ -35,8 +36,8 @@ def sanitize(dataStr, clusterHashTable):
 def main():
     if len(sys.argv) != 3:
     	print("Need csv input and output filenames as arguments")
-    clusterTableFilename = "clusters/cmu_cluster.txt"
-    clusterHashTableFilename = "clusters/cluster.pickle"
+    clusterTableFilename = "cmu_cluster.txt"
+    clusterHashTableFilename = "cluster.pickle"
     if os.path.isfile(clusterHashTableFilename):
     	clusterTable = pickle.load(clusterHashTableFilename)
     else:
