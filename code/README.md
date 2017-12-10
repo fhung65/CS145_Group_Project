@@ -32,3 +32,11 @@ Running:
         chmod 755 run.sh
     run the script:
         ./run.sh
+
+Other links:
+    library for Doc2Vec (gensim):
+        you can just do "pip install gensim"
+        https://radimrehurek.com/gensim/models/doc2vec.html
+    current (maybe will change later) library for fuzzy string match
+        for handling variety in spelling of twitter words:
+        pip install fuzzywuzzy
