@@ -8,47 +8,49 @@ stopWords = {"a", "about", "above", "after", "again", "against", "all", "am", "a
 RE_D = re.compile('\d')
 
 def generateClusterTable(hashTableFilename):
-	hashTable = {}
-	cache = {}
-	curr = ""
-	with open(hashTableFilename, 'r') as inFile:
-		for line in inFile:
-			line = line.split()
-			if line[0] != curr and curr != "":
-				curr = line[0]
-				maxWord = max(cache, key = cache.get)
-				for word in cache:
-					hashTable[word] = maxWord
-	return hashTable
+        hashTable = {}
+        cache = {}
+        curr = ""
+        with open(hashTableFilename, 'r') as inFile:
+                for line in inFile:
+                        line = line.split()
+                        if line[0] != curr and curr != "":
+                                curr = line[0]
+                                maxWord = max(cache, key = cache.get)
+                                for word in cache:
+                                        hashTable[word] = maxWord
+        return hashTable
 
 def sanitize(dataStr, clusterHashTable):
-	outputWords = []
-	words = dataStr.split()
-	for word in words:
-		word = word.lower()
-		if word in clusterHashTable:
-			word = clusterHashTable[word]
-		if word not in stopWords and not RE_D.search(word):
-			outputWords.append(word)
-	return ' '.join(outputWords)
+        outputWords = []
+        # add back contractions
+        added_contractions = re.sub(" s ","'s ", re.sub(" t ","'t ", dataStr))
+        words = added_contractions.split()
+        for word in words:
+                word = word.lower()
+                if word in clusterHashTable:
+                        word = clusterHashTable[word]
+                if word not in stopWords and not RE_D.search(word):
+                        outputWords.append(word)
+        return ' '.join(outputWords)
 
 
 def main():
     if len(sys.argv) != 3:
-    	print("Need csv input and output filenames as arguments")
-    clusterTableFilename = "cmu_cluster.txt"
-    clusterHashTableFilename = "cluster.pickle"
+        print("Need csv input and output filenames as arguments")
+    clusterTableFilename = "clusters/cmu_cluster.txt"
+    clusterHashTableFilename = "clusters/cluster.pickle"
     if os.path.isfile(clusterHashTableFilename):
-    	clusterTable = pickle.load(clusterHashTableFilename)
+        clusterTable = pickle.load(clusterHashTableFilename)
     else:
-    	clusterTable = generateClusterTable(clusterTableFilename)
+        clusterTable = generateClusterTable(clusterTableFilename)
     inputCSV = sys.argv[1]
     outputCSV = sys.argv[2]
     with open(inputCSV, "r") as inFile, open(outputCSV, 'w') as outFile:
-    	reader = csv.reader(inFile)
-    	writer = csv.writer(outFile)
-    	for line in reader:
-    		writer.writerow([sanitize(line[0], clusterTable), line[1]])
+        reader = csv.reader(inFile)
+        writer = csv.writer(outFile)
+        for line in reader:
+                writer.writerow([sanitize(line[0], clusterTable), line[1]])
 
 if __name__ == "__main__":
-	main()
+        main()
