@@ -40,3 +40,9 @@ Other links:
     current (maybe will change later) library for fuzzy string match
         for handling variety in spelling of twitter words:
         pip install fuzzywuzzy
+
+preprocessing:
+    ran "python3 cleanup.py tweets4.csv tweets4_preprocess_first_pass.csv"
+    then, in vim, replaced all occurrences of < t > with <'t > and < s > with <'s >
+    and lowercased everything
+    then ran "python3 cleanup.py tweets4_preprocess_first_pass.csv tweets4_preprocess_second_pass.csv"

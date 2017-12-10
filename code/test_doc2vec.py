@@ -4,12 +4,14 @@ import csv
 
 from time import gmtime, strftime
 import logging
-logging.basicConfig(filename='run_{}'.format(strftime("%Y-%m-%d_%H:%M:%S", gmtime())), format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+logtime = strftime("%Y-%m-%d_%H:%M:%S", gmtime())
+
+logging.basicConfig(filename='logs/doc2vec_{}'.format(logtime), format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 from test_tweets import *
 
 #text = open('tweets.csv')
-text = open('tweets4_also_sanitized.csv')
+text = open('tweets4_preprocessed.csv')
 
 corpus = []
 for i, line in enumerate(csv.reader(text)):
@@ -24,10 +26,13 @@ sentences = [x.words for x in corpus]
 model = gensim.models.doc2vec.Doc2Vec(size=100, window=5, min_count=2, iter=50)
 
 model.build_vocab(corpus)
-print(model.raw_vocab)
 
 model.train(corpus, total_examples=model.corpus_count, epochs=model.iter)
 
+model.save('models/doc2vec_{}'.format(logtime))
+
+
+#creating document vectors
 happy_new_year = model.infer_vector(['happy', 'new', 'year'])
 
 vs = [model.infer_vector(x) for x in test_tweets]
