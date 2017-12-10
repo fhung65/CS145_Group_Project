@@ -6,6 +6,8 @@ pip3
 python3
 tweepy
     (shouldn't have other sub dependencies)
+gensim
+sklearn
 
 Installation:
 
