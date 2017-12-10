@@ -7,7 +7,7 @@ import sys
 import csv
 
 def main():
-	if (sys.argv != 3):
+	if (len(sys.argv) != 3):
 		print("requires cleaned data csv and model filenames as arguments")
 		sys.exit(1)
 	X = []
@@ -19,7 +19,7 @@ def main():
 		reader = csv.reader(inFile)
 		for line in reader:
 			X.append(model.infer_vector(line[0].split()))
-			y.append(int(line[1]) > 0 ? 1 : 0)
+			y.append(1 if int(line[1]) > 0 else 0)
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 	mlp = MLPClassifier(hidden_layer_sizes=(30,30,30))
 	mlp.fit(X_train,y_train)
