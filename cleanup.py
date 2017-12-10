@@ -25,6 +25,7 @@ def sanitize(dataStr, clusterHashTable):
 	outputWords = []
 	words = dataStr.split()
 	for word in words:
+		word = word.lower()
 		if word in clusterHashTable:
 			word = clusterHashTable[word]
 		if word not in stopWords and not RE_D.search(word):
