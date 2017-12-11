@@ -30,10 +30,11 @@ activations = [
 
 def run_layers(layer_spec=(30,30,30)):
     spec_string = re.sub(' ', '_', str(layer_spec))
-    logfile = open('logs/net_log_{}.txt'.format(spec_string), 'w')
+    #logfile = open('logs/net_log_{}.txt'.format(spec_string), 'w')
 
     if (len(sys.argv) != 3):
-        logfile.write("requires cleaned data csv and model filenames as arguments" +'\n')
+        #logfile.write("requires cleaned data csv and model filenames as arguments" +'\n')
+        print("requires cleaned data csv and model filenames as arguments")
         sys.exit(1)
     X = []
     y = []
@@ -54,9 +55,11 @@ def run_layers(layer_spec=(30,30,30)):
     pickle.dump(mlp, model_file)
 
     predictions = mlp.predict(X_test)
-    logfile.write(str(confusion_matrix(y_test,predictions)) +'\n')
-    logfile.write(str(classification_report(y_test,predictions)) +'\n')
-    logfile.close()
+    #logfile.write(str(confusion_matrix(y_test,predictions)) +'\n')
+    #logfile.write(str(classification_report(y_test,predictions)) +'\n')
+    print(str(confusion_matrix(y_test,predictions)))
+    print(str(classification_report(y_test,predictions)))
+    #logfile.close()
 
 
     return X_train, X_test, y_train, y_test, predictions
@@ -184,11 +187,11 @@ def main():
     #p.map(run_activation, activations)
 
 if __name__ == "__main__":
-    #main()
+    main()
     #res = run_layers(layer_specs[0])
     #X_train, X_test, y_train, y_test, mod = load_data_and_mod()
     #thresholds = np.arange(0, 1, 0.01)
     #pts = roc(X_test, y_test, mod, thresholds)
 
-    for key in query_keys2:
-        queried_tweets_test(key)
+    #for key in query_keys2:
+        #queried_tweets_test(key)
