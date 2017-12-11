@@ -6,21 +6,19 @@ from langdetect import detect
 import sys
 sys.path.insert(0,'.')
 import keys
-import pdb
-import MySQLdb
 
 
 # Taken from http://www.geeksforgeeks.org/twitter-sentiment-analysis-using-python/
 
 
 HAPPY_EMOJI = {
-    '☺️': 1,
+    '☺': 1,
     ':)': 2,
     '😍': 3,
 }
 
 SAD_EMOJI = {
-    '☹️': -1,
+    '☹': -1,
     '😞': -1,
     ':(': -2,
     '😢': -3,
@@ -93,13 +91,16 @@ class TwitterClient(object):
     def extended_search(self, count=1000, page=1, *args, **kwargs):
         if 'lang' not in kwargs:
             kwargs['lang'] = 'en'
-        tweets = self.api.search(count=count, *args, **kwargs)
-        print(len(tweets))
-        # if page < 3:
-        #     new_tweets = self.extended_search(page = page + 1, *args, **kwargs)
-        #     if new_tweets:
-        #         tweets = new_tweets + tweets
-        return tweets
+        start = kwargs.get('')
+        return [
+            tweet for tweet in tweepy.Cursor(
+                self.api.search,
+                rpp=min(100, count),
+                result_type="recent",
+                include_entities=True,
+                **kwargs,
+            ).items(count)
+        ]
  
     def get_tweets(self, queries = None, count = 1000):
         '''
@@ -141,6 +142,7 @@ class TwitterClient(object):
             print('Error : ' + str(e))
 
     def insert_tweets_into_db(self, tweets):
+        import MySQLdb
         conn = MySQLdb.connect(host='localhost', user='root', passwd='', db='emoji_tweets', use_unicode=True)
         conn.set_character_set('utf8')
         cursor = conn.cursor()
@@ -153,11 +155,12 @@ class TwitterClient(object):
                 print('Ignoring %s' % e)
         cursor.close()
         conn.close()
- 
-def main():
-    # creating object of TwitterClient Class
+
+tweepy.Status.__hash__ = lambda self: self.text
+
+
+def get_emoji_tweets():
     api = TwitterClient()
-    # calling function to get tweets
     tweets = api.get_tweets(count = 100)
     api.insert_tweets_into_db(tweets)
 
@@ -180,6 +183,49 @@ def main():
     print('\n\nNegative tweets: %d' % len(ntweets))
     for tweet in ntweets:
         print(tweet['text'])
- 
+
+def get_keyword_tweets():
+    # creating object of TwitterClient Class
+    api = TwitterClient()
+    # calling function to get tweets
+
+
+    queries = [
+        # 'UCLA',
+        # 'trump',
+        # 'lafd',
+        # 'lapd',
+        # 'terrycrews',
+        # 'reputation',
+        # 'coco',
+        # 'thanksgiving',
+        # 'christmas',
+        'morning',
+        # 'bitcoin',
+    ]
+
+    with open( 'tweets.p', 'rb' ) as f:
+        import pickle
+        try:
+            tweets = pickle.load(f)
+            print(tweets.keys())
+        except: 
+            tweets = {}
+
+    tweets.update({q: results for q, results in map(lambda q: (q, api.extended_search(q=q)), queries)})
+    print(tweets.keys())
+
+    import pdb
+    # pdb.set_trace()
+    with open( 'tweets.p', 'wb' ) as f:
+        import pickle
+        pickle.dump(tweets, f)
+
+def main():
+    get_keyword_tweets()
+
+
+
+
 if __name__ == '__main__':
     main()
