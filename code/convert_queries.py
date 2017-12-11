@@ -2,7 +2,8 @@ import csv
 import pickle
 import re
 
-dat = pickle.load(open('tweets.p', 'rb'))
+#dat = pickle.load(open('tweets.p', 'rb'))
+dat = pickle.load(open('tweets3.p', 'rb'))
 
 HAPPY_EMOJI = {
     '☺️': 1,

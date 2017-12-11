@@ -138,17 +138,25 @@ def roc(data_mat, ground_truths, mod, thresholds):
     return l
 
 query_keys = [
-'UCLA',
-'bitcoin',
-'christmas',
-'coco',
-'lafd',
-'lapd',
-'morning',
-'reputation',
-'terrycrews',
-'thanksgiving',
-'trump',
+    'UCLA',
+    'bitcoin',
+    'christmas',
+    'coco',
+    'lafd',
+    'lapd',
+    'morning',
+    'reputation',
+    'terrycrews',
+    'thanksgiving',
+    'trump',
+]
+
+query_keys2 = [
+    'birthday',
+    'dead',
+    'justice_league',
+    'thor',
+    'wedding',
 ]
 
 def queried_tweets_test(key):
@@ -182,5 +190,5 @@ if __name__ == "__main__":
     #thresholds = np.arange(0, 1, 0.01)
     #pts = roc(X_test, y_test, mod, thresholds)
 
-    for key in query_keys:
+    for key in query_keys2:
         queried_tweets_test(key)
