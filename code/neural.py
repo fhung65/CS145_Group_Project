@@ -88,14 +88,17 @@ def run_activation(activation='identity'):
     logfile.write(str(classification_report(y_test,predictions)) +'\n')
     logfile.close()
 
-def load_data_and_mod():
+def load_data_and_mod(dataCSVFilename=''):
 
     if (len(sys.argv) != 3):
         logfile.write("requires cleaned data csv and model filenames as arguments" +'\n')
         sys.exit(1)
     X = []
     y = []
-    dataCSVFilename = sys.argv[1]
+
+    if (dataCSVFilename == ''):
+        dataCSVFilename = sys.argv[1]
+
     modelFilename = sys.argv[2]
     model = Doc2Vec.load(modelFilename)
     with open(dataCSVFilename, 'r') as inFile:
@@ -134,6 +137,39 @@ def roc(data_mat, ground_truths, mod, thresholds):
         l.append((1.0 - tn*1.0/(tn + fp), tp*1.0/(tp + fn)))
     return l
 
+query_keys = [
+'UCLA',
+'bitcoin',
+'christmas',
+'coco',
+'lafd',
+'lapd',
+'morning',
+'reputation',
+'terrycrews',
+'thanksgiving',
+'trump',
+]
+
+def queried_tweets_test(key):
+    filename = 'queried_tweets/second_pass_preprocess/{}_second_pass.csv'.format(key)
+    X_train, X_test, y_train, y_test, mod = load_data_and_mod(filename)
+
+    data_list = X_train + X_test
+    gt_list = y_train + y_test
+
+    prob = mod.predict_proba(data_list)
+    y = thresh_test(prob, 0.5)
+
+    writer = csv.writer(open('{}_prediction.csv'.format(key), 'w'))
+
+    for line in prob:
+        writer.writerow(list(line))
+
+    #plt.hist(prob, bins = 'auto')
+    #plt.title(key)
+    #plt.show()
+
 def main():
     p = Pool(8)
     p.map(run_layers, layer_specs[:1])
@@ -142,6 +178,9 @@ def main():
 if __name__ == "__main__":
     #main()
     #res = run_layers(layer_specs[0])
-    X_train, X_test, y_train, y_test, mod = load_data_and_mod()
-    thresholds = np.arange(0, 1, 0.01)
-    pts = roc(X_test, y_test, mod, thresholds)
+    #X_train, X_test, y_train, y_test, mod = load_data_and_mod()
+    #thresholds = np.arange(0, 1, 0.01)
+    #pts = roc(X_test, y_test, mod, thresholds)
+
+    for key in query_keys:
+        queried_tweets_test(key)
