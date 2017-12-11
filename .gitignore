@@ -1,1 +1,8 @@
 keys.py
+__pycache__
+*.swp
+*.swo
+logs/
+models/
+junk/
+old_data/

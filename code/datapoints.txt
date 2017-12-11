@@ -1,0 +1,109 @@
+==> logs/net_log_(30,_30,_30).txt <==
+[[2498 1083]
+ [1264 1489]]
+             precision    recall  f1-score   support
+
+          0       0.66      0.70      0.68      3581
+          1       0.58      0.54      0.56      2753
+
+avg / total       0.63      0.63      0.63      6334
+
+
+==> logs/net_log_(30,_30).txt <==
+[[2556 1025]
+ [1260 1493]]
+             precision    recall  f1-score   support
+
+          0       0.67      0.71      0.69      3581
+          1       0.59      0.54      0.57      2753
+
+avg / total       0.64      0.64      0.64      6334
+
+
+==> logs/net_log_(40,_40,_40).txt <==
+[[2627  954]
+ [1474 1279]]
+             precision    recall  f1-score   support
+
+          0       0.64      0.73      0.68      3581
+          1       0.57      0.46      0.51      2753
+
+avg / total       0.61      0.62      0.61      6334
+
+
+==> logs/net_log_(40,_40).txt <==
+[[2440 1141]
+ [1246 1507]]
+             precision    recall  f1-score   support
+
+          0       0.66      0.68      0.67      3581
+          1       0.57      0.55      0.56      2753
+
+avg / total       0.62      0.62      0.62      6334
+
+
+==> logs/net_log_(50,_50,_50,_50).txt <==
+[[2366 1215]
+ [1285 1468]]
+             precision    recall  f1-score   support
+
+          0       0.65      0.66      0.65      3581
+          1       0.55      0.53      0.54      2753
+
+avg / total       0.60      0.61      0.60      6334
+
+
+==> logs/net_log_(50,_50,_50).txt <==
+[[2467 1114]
+ [1362 1391]]
+             precision    recall  f1-score   support
+
+          0       0.64      0.69      0.67      3581
+          1       0.56      0.51      0.53      2753
+
+avg / total       0.61      0.61      0.61      6334
+
+
+==> logs/net_log_(50,_50).txt <==
+[[2335 1246]
+ [1200 1553]]
+             precision    recall  f1-score   support
+
+          0       0.66      0.65      0.66      3581
+          1       0.55      0.56      0.56      2753
+
+avg / total       0.61      0.61      0.61      6334
+
+
+==> logs/net_log_spec_(30,_30,_30)_logistic.txt <==
+[[2650  921]
+ [1538 1225]]
+             precision    recall  f1-score   support
+
+          0       0.63      0.74      0.68      3571
+          1       0.57      0.44      0.50      2763
+
+avg / total       0.61      0.61      0.60      6334
+
+
+==> logs/net_log_spec_(30,_30,_30)_relu.txt <==
+[[2559 1012]
+ [1326 1437]]
+             precision    recall  f1-score   support
+
+          0       0.66      0.72      0.69      3571
+          1       0.59      0.52      0.55      2763
+
+avg / total       0.63      0.63      0.63      6334
+
+
+==> logs/net_log_spec_(30,_30,_30)_tanh.txt <==
+[[2510 1061]
+ [1359 1404]]
+             precision    recall  f1-score   support
+
+          0       0.65      0.70      0.67      3571
+          1       0.57      0.51      0.54      2763
+
+avg / total       0.61      0.62      0.61      6334
+
